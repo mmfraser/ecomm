@@ -1,22 +1,20 @@
 <?php
 require_once('../App.php');
 
-class Genre {
-	private $GenreID;
+class Language {
+	private $LanguageID;
   	public $Name;
-  	public $Description;
   	public $isLoaded;
 
-	function __construct($Name = "", $Description = "") {
+	function __construct($Name = "") {
 		$this->conn = App::getDB();
 		$this->Name = $Name;
-		$this->Description = $Description;
 	}
 
 	/*	This function gets the object with data given the userId.
 	*/
-	public function populateId($genreID){
-		$sql = "SELECT * FROM genre WHERE GenreID = '".mysql_real_escape_string($genreID)."'";
+	public function populateId($languageID){
+		$sql = "SELECT * FROM languages WHERE LanguageID = '".mysql_real_escape_string($languageID)."'";
 		$row = $this->conn->getDataRow($sql);
 		if($row == null)
 			return false;
@@ -26,10 +24,9 @@ class Genre {
 	/*	This function populates the object with data given a datarow.
 	*/
 	public function getRow($row){
-		$this->GenreID = $row['GenreID'];
+		$this->LanguageID = $row['LanguageID'];
 		$this->Name = $row['Name'];
-		$this->Description = $row['Description'];
-	
+		
 		$this->isLoaded = true;
 	}
 
@@ -37,23 +34,22 @@ class Genre {
 		an object being updated.
 	*/
 	public function save() {	
-		if($this->Name == null || $this->Description == null) {
+		if($this->Name == null) {
 			throw new Exception('One or more required fields are not completed.');
 		}
 
 		if ($this->isLoaded === true) {
 			
-			$SQL = "UPDATE genre SET 
-					Name = '".mysql_real_escape_string($this->Name)."', 
-					Description = '".mysql_real_escape_string($this->Description)."'
-					WHERE GenreID = '".mysql_real_escape_string($this->GenreID)."'";
+			$SQL = "UPDATE languages SET 
+					Name = '".mysql_real_escape_string($this->Name)."'
+					WHERE LanguageID = '".mysql_real_escape_string($this->LanguageID)."'";
 
 			$this->conn->execute($SQL);
 		} else {
-			$SQL = "INSERT INTO genre (Name, Description) 
-			VALUES ('".mysql_real_escape_string($this->Name)."', '".mysql_real_escape_string($this->Description)."')";
+			$SQL = "INSERT INTO languages (Name) 
+			VALUES ('".mysql_real_escape_string($this->Name)."')";
 			$this->isLoaded = true;
-			$this->GenreID = $this->conn->execute($SQL);
+			$this->LanguageID = $this->conn->execute($SQL);
 		}		
 	}
 
@@ -61,17 +57,16 @@ class Genre {
 	*/
 	public function toString() {
 		$str = "<br />";
-		$str .= "<br />GenreID: " . $this->GenreID;
+		$str .= "<br />LanguageID: " . $this->LanguageID;
 		$str .= "<br />Name: " . $this->Name;
-		$str .= "<br />Description: " . $this->Description;	
 		return $str;
 	}
 }
 
- // $test = new Genre();
- // $test->populateId(2);
+  // $test = new Language("");
+  // $test->populateId(2);
 
- // print $test->toString();
+  // print $test->toString();
 
 /*$test = new User();
 $test->populateUsername("Marc");
