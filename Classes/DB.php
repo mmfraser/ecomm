@@ -25,7 +25,7 @@
 		*/
 		public static function getInstance() {
 			if (self::$obj == null)
-				self::$obj = new DB();
+				self::$obj = new DB;
 				
 			return self::$obj;
 		}

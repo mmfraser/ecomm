@@ -1,18 +1,20 @@
 <?php
-require_once('../App.php');
+require_once('App.php');
 
 class MovieScreening {
 	private $ScreeningID;
   	public $MovieID;
 	public $ScreenID;
-	public $DateTime;
+	public $Date;
+	public $Time;
   	public $isLoaded;
 
-	function __construct($MovieID = "", $ScreenID = "", $DateTime = "") {
+	function __construct($MovieID = "", $ScreenID = "", $Date = "", $Time = "") {
 		$this->conn = App::getDB();
 		$this->MovieID = $MovieID;
 		$this->ScreenID = $ScreenID;
-		$this->DateTime = $DateTime;
+		$this->Date = $Date;
+		$this->Time = $Time;
 	}
 
 	/*	This function gets the object with data given the userId.
@@ -31,7 +33,8 @@ class MovieScreening {
 		$this->ScreeningID = $row['ScreeningID'];
 		$this->MovieID = $row['MovieID'];
 		$this->ScreenID = $row['ScreenID'];
-		$this->DateTime = $row['DateTime'];
+		$this->Date = $row['Date'];
+		$this->Time = $row['Time'];
 		$this->isLoaded = true;
 	}
 
@@ -39,21 +42,36 @@ class MovieScreening {
 		an object being updated.
 	*/
 	public function save() {	
-		if($this->Name == null || $this->MovieID == null || $this->ScreenID == null || $this->DateTime == null) {
+		if($this->MovieID == null || $this->ScreenID == null || $this->Date == null || $this->Time == null) {
 			throw new Exception('One or more required fields are not completed.');
 		}
+		
+		try {
+			if(strpos($this->Date, '/') !== false) {
+				$dateArr = date_parse_from_format("d/m/Y", $this->Date);
+				$dateFormat = $dateArr["year"] . "-" . $dateArr["month"] . "-" . $dateArr["day"];
+			} else if(strpos($this->Date, '-') !== false) {
+				$dateFormat = $this->Date;
+			} else 
+				throw new Exception("Invalid date format.  Expected dd/mm/yyyy or yyyy-mm-dd.");
+		} catch(Exception $e) {
+			throw $e;
+		}
+			$this->Date = $dateFormat;
+		
 
 		if ($this->isLoaded === true) {		
 			$SQL = "UPDATE movie_screening SET 
 					MovieID = ".mysql_real_escape_string($this->MovieID).",
 					ScreenID = ".mysql_real_escape_string($this->ScreenID).",
-					DateTime = '".mysql_real_escape_string($this->DateTime)."'
+					Date = '".mysql_real_escape_string($this->Date)."',
+					Time = '".mysql_real_escape_string($this->Time)."',
 					WHERE ScreeningID = '".mysql_real_escape_string($this->ScreeningID)."'";
 
 			$this->conn->execute($SQL);
 		} else {
-			$SQL = "INSERT INTO languages (MovieID, ScreenID, DateTime) 
-			VALUES (".mysql_real_escape_string($this->MovieID).", ".mysql_real_escape_string($this->ScreenID).", '".mysql_real_escape_string($this->DateTime)."')";
+			$SQL = "INSERT INTO movie_screening (MovieID, ScreenID, Date, Time) 
+			VALUES (".mysql_real_escape_string($this->MovieID).", ".mysql_real_escape_string($this->ScreenID).", '".mysql_real_escape_string($this->Date)."', '".mysql_real_escape_string($this->Time)."')";
 			$this->isLoaded = true;
 			$this->ScreeningID = $this->conn->execute($SQL);
 		}		
@@ -66,7 +84,8 @@ class MovieScreening {
 		$str .= "<br />ScreeningID: " . $this->ScreeningID;
 		$str .= "<br />MovieID: " . $this->MovieID;
 		$str .= "<br />ScreenID: " . $this->ScreenID;
-		$str .= "<br />DateTime: " . $this->DateTime;
+		$str .= "<br />Date: " . $this->Date;
+		$str .= "<br />Time: " . $this->Time;
 		
 		return $str;
 	}

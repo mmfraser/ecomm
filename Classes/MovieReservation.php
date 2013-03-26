@@ -1,5 +1,5 @@
 <?php
-require_once('../App.php');
+require_once('App.php');
 
 class MovieReservation {
 	private $ReservationID;

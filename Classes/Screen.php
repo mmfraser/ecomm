@@ -1,14 +1,16 @@
 <?php
-require_once('../App.php');
+require_once('App.php');
 
-class Screens {
+class Screen {
 	private $ScreenID;
-  	public $NoSeats;
+  	public $NoRows;
+	public $NoColumns;
   	public $isLoaded;
 
-	function __construct($NoSeats = "") {
+	function __construct($NoRows = "", $NoColumns) {
 		$this->conn = App::getDB();
-		$this->NoSeats = $NoSeats;
+		$this->NoRows = $NoRows;
+		$this->NoColumns = $NoColumns;
 	}
 
 	/*	This function gets the object with data given the userId.
@@ -25,8 +27,8 @@ class Screens {
 	*/
 	public function getRow($row){
 		$this->ScreenID = $row['ScreenID'];
-		$this->NoSeats = $row['NoSeats'];
-		
+		$this->NoRows = $row['NoRows'];
+		$this->NoColumns = $row['NoColumns'];
 		$this->isLoaded = true;
 	}
 
@@ -34,20 +36,21 @@ class Screens {
 		an object being updated.
 	*/
 	public function save() {	
-		if($this->NoSeats == null) {
+		if($this->NoColumns == null || $this->NoRows == null) {
 			throw new Exception('One or more required fields are not completed.');
 		}
 
 		if ($this->isLoaded === true) {
 			
 			$SQL = "UPDATE screens SET 
-					NoSeats = '".mysql_real_escape_string($this->NoSeats)."'
+					NoColumns = '".mysql_real_escape_string($this->NoColumns)."',
+					NoRows = '".mysql_real_escape_string($this->NoRows)."'
 					WHERE ScreenID = '".mysql_real_escape_string($this->ScreenID)."'";
 
 			$this->conn->execute($SQL);
 		} else {
-			$SQL = "INSERT INTO screens (NoSeats) 
-			VALUES ('".mysql_real_escape_string($this->NoSeats)."')";
+			$SQL = "INSERT INTO screens (NoRows, NoColumns) 
+			VALUES ('".mysql_real_escape_string($this->NoRows)."','".mysql_real_escape_string($this->NoColumns)."')";
 			$this->isLoaded = true;
 			$this->ScreenID = $this->conn->execute($SQL);
 		}		
@@ -58,7 +61,8 @@ class Screens {
 	public function toString() {
 		$str = "<br />";
 		$str .= "<br />ScreenID: " . $this->ScreenID;
-		$str .= "<br />NoSeats: " . $this->NoSeats;
+		$str .= "<br />NoRows: " . $this->NoRows;
+		$str .= "<br />NoRows: " . $this->NoColumns;
 		return $str;
 	}
 }

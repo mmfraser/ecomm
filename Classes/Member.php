@@ -1,5 +1,5 @@
 <?php
-require_once('../App.php');
+require_once('App.php');
 
 class Member {
 	private $memberId;
@@ -80,9 +80,12 @@ class Member {
 		an object being updated.
 	*/
 	public function save() {	
-		if($this->forename == null || $this->surname == null || $this->emailAddress == null || $this->password == null || $this->addressLine1 == null || $this->addressLine2 == null || $this->town == null || $this->postcode == null || $this->isAdmin == null) {
+		if($this->forename == null || $this->surname == null || $this->password == null || $this->addressLine1 == null || $this->addressLine2 == null || $this->town == null || $this->postcode == null) {
 			throw new Exception('One or more required fields are not completed.');
 		}
+		
+		if(!filter_var($this->emailAddress, FILTER_VALIDATE_EMAIL))
+			throw new Exception('Email address provided must be valid.');
 
 		if($this->isActive == null)
 			$this->isActive = 0;
@@ -108,17 +111,21 @@ class Member {
 			
 
 			$SQL = "INSERT INTO members (Forename, Surname, EmailAddress, Password, AddressLine1, AddressLine2, Town, Postcode, IsAdmin, IsActive) 
-			VALUES ('".mysql_real_escape_string($this->forename)."', '".mysql_real_escape_string($this->surename)."', '".mysql_real_escape_string($this->emailAddress)."', '".App::secureString($this->password)."', '".mysql_real_escape_string($this->addressLine1)."', '".mysql_real_escape_string($this->addressLine2)."', '".mysql_real_escape_string($this->town)."', '".mysql_real_escape_string($this->postcode)."', ".mysql_real_escape_string($this->isAdmin).", ".mysql_real_escape_string($this->isActive).")";
+			VALUES ('".mysql_real_escape_string($this->forename)."', '".mysql_real_escape_string($this->surname)."', '".mysql_real_escape_string($this->emailAddress)."', '".App::secureString($this->password)."', '".mysql_real_escape_string($this->addressLine1)."', '".mysql_real_escape_string($this->addressLine2)."', '".mysql_real_escape_string($this->town)."', '".mysql_real_escape_string($this->postcode)."', ".mysql_real_escape_string($this->isAdmin).", ".mysql_real_escape_string($this->isActive).")";
 			$this->isLoaded = true;
 			$this->memberId = $this->conn->execute($SQL);
 		}		
 	}
 
+	public function getMemberId() {
+		return $this->memberId;
+	}
+	
 	/* 	This function shuold be used for debugging only.  It outputs all the values of the object.
 	*/
 	public function toString() {
 		$str = "<br />";
-		$str .= "<br />memberId: " . $this->memberId;
+		$str .= "<br />memberId: " . $this->getMemberId();
 		$str .= "<br />email: " . $this->emailAddress;
 		$str .= "<br />forename: " . $this->forename;
 		$str .= "<br />surname: " . $this->surname;

@@ -1,17 +1,17 @@
 <?php
-require_once('../App.php');
+require_once('App.php');
 
 class MovieTicketReservation {
 	private $MovieTicketReservationID;
   	public $ReservationID;
-	public $MovieTicketCostID;
+	public $TicketCategoryID;
 	public $NoSeats;
   	public $isLoaded;
 
-	function __construct($ReservationID = "", $MovieTicketCostID = "", $NoSeats = "") {
+	function __construct($ReservationID = "", $TicketCategoryID = "", $NoSeats = "") {
 		$this->conn = App::getDB();
 		$this->ReservationID = $ReservationID;
-		$this->MovieTicketCostID = $MovieTicketCostID;
+		$this->TicketCategoryID = $TicketCategoryID;
 		$this->NoSeats = $NoSeats;
 	}
 
@@ -30,7 +30,7 @@ class MovieTicketReservation {
 	public function getRow($row){
 		$this->MovieTicketReservationID = $row['MovieTicketReservationID'];
 		$this->ReservationID = $row['ReservationID'];
-		$this->MovieTicketCostID = $row['MovieTicketCostID'];
+		$this->TicketCategoryID = $row['TicketCategoryID'];
 		$this->NoSeats = $row['NoSeats'];
 		$this->isLoaded = true;
 	}
@@ -39,21 +39,21 @@ class MovieTicketReservation {
 		an object being updated.
 	*/
 	public function save() {	
-		if($this->ReservationID == null || $this->MovieTicketCostID == null || $this->NoSeats == null) {
+		if($this->ReservationID == null || $this->TicketCategoryID == null || $this->NoSeats == null) {
 			throw new Exception('One or more required fields are not completed.');
 		}
 
 		if ($this->isLoaded === true) {		
 			$SQL = "UPDATE movie_ticket_reservation SET 
 					ReservationID = ".mysql_real_escape_string($this->ReservationID).",
-					MovieTicketCostID = ".mysql_real_escape_string($this->MovieTicketCostID).",
+					TicketCategoryID = ".mysql_real_escape_string($this->TicketCategoryID).",
 					NoSeats = '".mysql_real_escape_string($this->NoSeats)."'
 					WHERE MovieTicketReservationID = '".mysql_real_escape_string($this->MovieTicketReservationID)."'";
 
 			$this->conn->execute($SQL);
 		} else {
-			$SQL = "INSERT INTO languages (ReservationID, MovieTicketCostID, NoSeats) 
-			VALUES (".mysql_real_escape_string($this->ReservationID).", ".mysql_real_escape_string($this->MovieTicketCostID).", '".mysql_real_escape_string($this->NoSeats)."')";
+			$SQL = "INSERT INTO languages (ReservationID, TicketCategoryID, NoSeats) 
+			VALUES (".mysql_real_escape_string($this->ReservationID).", ".mysql_real_escape_string($this->TicketCategoryID).", '".mysql_real_escape_string($this->NoSeats)."')";
 			$this->isLoaded = true;
 			$this->MovieTicketReservationID = $this->conn->execute($SQL);
 		}		
@@ -65,7 +65,7 @@ class MovieTicketReservation {
 		$str = "<br />";
 		$str .= "<br />MovieTicketReservationID: " . $this->MovieTicketReservationID;
 		$str .= "<br />ReservationID: " . $this->ReservationID;
-		$str .= "<br />MovieTicketCostID: " . $this->MovieTicketCostID;
+		$str .= "<br />TicketCategoryID: " . $this->TicketCategoryID;
 		$str .= "<br />NoSeats: " . $this->NoSeats;
 		
 		return $str;
