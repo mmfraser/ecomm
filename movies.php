@@ -6,6 +6,9 @@
 	require_once('Classes/Language.php');
 	$pge = new Page("Movies");	
 	$pge->getHeader(); 
+	if(!App::getAuthMember()) {
+		App::fatalError($pge, "This page is restricted.  You must be logged in to view movies.");
+	}
 
 ?>
 <h2>CineMagic Movie Database</h2>	
@@ -98,10 +101,12 @@
 				foreach($searchArr as $arr) {
 				$movie = new Movie();
 				$movie->populateId($arr['MovieID']);
+				$director = new Director();
+				$director->populateId($movie->DirectorID);
 					print '		<h4><a href="movies.php?movieFilter='.$arr['MovieID'].'">'.$movie->Name.'</a></h4>';
 					print ' 	<p></p>';
 					print '		<td>'.$movie->Description.'</td>';
-					print '<table><tr><td><strong>Director:</strong></td><td>'.$movie->DirectorID.'</td><td><strong>Release Date:</strong></td><td>'.$movie->ReleaseDate.'</td><td><strong>Duration:</strong></td><td>'.$movie->duration.' mins</td></table>';
+					print '<table><tr><td><strong>Director:</strong></td><td>'.$director->forename.' '.$director->surname.'</td><td><strong>Release Date:</strong></td><td>'.$movie->ReleaseDate.'</td><td><strong>Duration:</strong></td><td>'.$movie->duration.' mins</td></table>';
 				}
 		} else {
 			print '<p>There are currently no movies which match your search.</p>';
@@ -138,6 +143,9 @@
 		print '<h5>Language:</h5>';
 		print '<p>'.$language->Name.'</p>';
 		
+		print '<h5>Duration:</h5>';
+		print '<p>'.$movie->duration.' minutes</p>';
+		
 		$screeningsArr = App::getDB()->getArrayFromDB("SELECT distinct Date from Movie_Screening WHERE MovieID = ".$_GET['movieFilter']." AND Date >= NOW()");
 		
 		print '<h5>Screenings:</h5>';
@@ -167,10 +175,13 @@
 				foreach($movieArr as $arr) {
 				$movie = new Movie();
 				$movie->populateId($arr['MovieID']);
+				$director = new Director();
+				$director->populateId($movie->DirectorID);
+				
 					print '		<h4><a href="movies.php?movieFilter='.$arr['MovieID'].'">'.$movie->Name.'</a></h4>';
 					print ' 	<p></p>';
 					print '		<td>'.$movie->Description.'</td>';
-					print '<table><tr><td><strong>Director:</strong></td><td>'.$movie->DirectorID.'</td><td><strong>Release Date:</strong></td><td>'.$movie->ReleaseDate.'</td><td><strong>Duration:</strong></td><td>'.$movie->duration.' mins</td></table>';
+					print '<table><tr><td><strong>Director:</strong></td><td>'.$director->forename.' '.$director->surname.'</td><td><strong>Release Date:</strong></td><td>'.$movie->ReleaseDate.'</td><td><strong>Duration:</strong></td><td>'.$movie->duration.' mins</td></table>';
 				}
 		} else {
 			print '<p>There are currently no movies in this genre</p>';

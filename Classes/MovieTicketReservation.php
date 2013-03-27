@@ -52,7 +52,8 @@ class MovieTicketReservation {
 
 			$this->conn->execute($SQL);
 		} else {
-			$SQL = "INSERT INTO languages (ReservationID, TicketCategoryID, NoSeats) 
+		print $here;
+			$SQL = "INSERT INTO movie_ticket_reservation (ReservationID, TicketCategoryID, NoSeats) 
 			VALUES (".mysql_real_escape_string($this->ReservationID).", ".mysql_real_escape_string($this->TicketCategoryID).", '".mysql_real_escape_string($this->NoSeats)."')";
 			$this->isLoaded = true;
 			$this->MovieTicketReservationID = $this->conn->execute($SQL);

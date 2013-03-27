@@ -37,11 +37,11 @@
 			if(isset($_GET['Time'])) {
 				// Submit to database
 				if($_GET['noAdults'] > 0 || $_GET['noChildren'] > 0 || $_GET['noStudents'] > 0 || $_GET['noConcession'] > 0) {
-				
-					$booking = new MovieReservation(App::getAuthMember()->memberId, $_GET['Time'], $_GET['noAdults'], $_GET['noChildren'], $_GET['noStudents'], $_GET['noConcession']);
-					
-					print_r($booking);
+								
+					$booking = new MovieReservation(App::getAuthMember()->memberId, $_GET['Time'], $_GET['noAdults'], $_GET['noChildren'], $_GET['noStudent'], $_GET['noConcession']);
 					$booking->save();	
+					
+					print $booking->GetReservationTicket();
 			
 				} else {
 				print '<span><a class="button" href="?movieID='.$_GET['movieID'].'&amp;dateSelected='.$_GET['dateSelected'].'">Back</a></span>';

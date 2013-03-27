@@ -37,11 +37,11 @@
 			$output .= '		<div id="headRight">' . PHP_EOL;
 			$output .= '			<ul>' . PHP_EOL;
 			$output .= '				<li '.$homeActive.'><a href="index.php">Home</a></li>' . PHP_EOL;
-			$output .= '				<li '.$moviesActive.'><a href="movies.php">Movies</a></li>' . PHP_EOL;
-			$output .= '				<li '.$directorsActive.'><a href="directors.php">Directors</a></li>' . PHP_EOL;
-			$output .= '				<li '.$contactUsActive.'><a href="contactus.php">Contact Us</a></li>' . PHP_EOL;
+		
 			
 			if(App::checkAuth()) {
+				$output .= '				<li '.$moviesActive.'><a href="movies.php">Movies</a></li>' . PHP_EOL;
+				$output .= '				<li '.$directorsActive.'><a href="directors.php">Directors</a></li>' . PHP_EOL;
 				$output .= '				<li '.$accountActive.'><a href="App.php?do=logout">Log Out</a></li>' . PHP_EOL;
 			} else {
 				$output .= '				<li '.$accountActive.'><a href="login.php">Login</a></li>' . PHP_EOL;
@@ -69,8 +69,11 @@
 			if(App::checkAuth()) {
 				// Show account widget (logged in)
 				$output .= '<div class="widget">'.PHP_EOL;
-				$output .= '<h4><a href="manageaccount.php?memberId='.$member->getMemberId().'">My Account</a></h4>'.PHP_EOL;
+				$output .= '<h4><a href="manageaccount.php">My Account</a></h4>'.PHP_EOL;
 				$output .= '<p>Welcome, '.$member->forename.'.</p>'.PHP_EOL;
+				
+				$count = App::getDB()->getNumResults("SELECT ReservationID from movie_reservation mr left join movie_screening ms on mr.MovieScreeningID = ms.ScreeningID where mr.MemberID = ".$member->getMemberId()." AND ms.Date >= NOW()");
+				$output .= '<p>You currently have '.$count.' open reservations.</p>'.PHP_EOL;
 				$output .= '</div>'.PHP_EOL;
 			} else if($this->title != "Login") {
 				// Show login widget (not logged in)
@@ -115,7 +118,7 @@
 					$output .= '<li><a href="managescreenings.php">Manage Screenings</a></li>'.PHP_EOL;
 					$output .= '<li><a href="managescreens.php">Manage Screens</a></li>'.PHP_EOL;
 					$output .= '<li><a href="managemisc.php">Manage Directors, Genre &amp; Languages</a></li>'.PHP_EOL;
-					$output .= '<li>Manage Members</li>'.PHP_EOL;
+				//	$output .= '<li>Manage Members</li>'.PHP_EOL;
 				$output .= '</ul>'.PHP_EOL;
 				$output .= '</div>'.PHP_EOL;
 			}

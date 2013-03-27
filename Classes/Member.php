@@ -53,7 +53,7 @@ class Member {
 	/*	This function populates the object with data given a datarow.
 	*/
 	public function getRow($row){
-		$this->memberId = $row['MemberId'];
+		$this->memberId = $row['MemberID'];
 		$this->forename = $row['Forename'];
 		$this->surname = $row['Surname'];
 		$this->password = $row['Password'];
