@@ -37,9 +37,9 @@
 			$output .= '		<div id="headRight">' . PHP_EOL;
 			$output .= '			<ul>' . PHP_EOL;
 			$output .= '				<li '.$homeActive.'><a href="index.php">Home</a></li>' . PHP_EOL;
-			$output .= '				<li '.$moviesActive.'><a href="charts.php">Movies</a></li>' . PHP_EOL;
-			$output .= '				<li '.$directorsActive.'><a href="product.php">Directors</a></li>' . PHP_EOL;
-			$output .= '				<li '.$contactUsActive.'><a href="artist.php">Contact Us</a></li>' . PHP_EOL;
+			$output .= '				<li '.$moviesActive.'><a href="movies.php">Movies</a></li>' . PHP_EOL;
+			$output .= '				<li '.$directorsActive.'><a href="directors.php">Directors</a></li>' . PHP_EOL;
+			$output .= '				<li '.$contactUsActive.'><a href="contactus.php">Contact Us</a></li>' . PHP_EOL;
 			
 			if(App::checkAuth()) {
 				$output .= '				<li '.$accountActive.'><a href="App.php?do=logout">Log Out</a></li>' . PHP_EOL;

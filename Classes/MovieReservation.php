@@ -1,18 +1,22 @@
 <?php
 require_once('App.php');
+require_once('MovieTicketReservation.php');
 
 class MovieReservation {
 	private $ReservationID;
   	public $MemberID;
 	public $MovieScreeningID;
-	public $PurchaseDate;
+	public $ReservationDate;
+	public $adult;
+	public $child;
+	public $student;
+	public $concession;
   	public $isLoaded;
 
-	function __construct($MemberID = "", $MovieScreeningID = "", $PurchaseDate = "") {
+	function __construct($MemberID = "", $MovieScreeningID = "", $adult = 0, $child = 0, $student = 0, $concession = 0) {
 		$this->conn = App::getDB();
 		$this->MemberID = $MemberID;
 		$this->MovieScreeningID = $MovieScreeningID;
-		$this->PurchaseDate = $PurchaseDate;
 	}
 
 	/*	This function gets the object with data given the userId.
@@ -31,28 +35,55 @@ class MovieReservation {
 		$this->ReservationID = $row['ReservationID'];
 		$this->MemberID = $row['MemberID'];
 		$this->MovieScreeningID = $row['MovieScreeningID'];
-		$this->PurchaseDate = $row['PurchaseDate'];
+		$this->ReservationDate = $row['ReservationDate'];
 		
 		$this->isLoaded = true;
+	}
+	
+	public function updateTicketReservation() {
+		App::getDB()->execute("DELETE FROM movie_ticket_reservation WHERE ReservationID = ".$this->ReservationID."");
+		
+		if($this->adult > 0) {
+			$tcktRes = new MovieTicketReservation($this->ReservationID, 1, $this->adult);
+			$tcktRes->save();
+		}
+		
+		if($this->child > 0) {
+			$tcktRes = new MovieTicketReservation($this->ReservationID, 2, $this->child);
+			$tcktRes->save();
+		}
+		
+		if($this->student > 0) {
+			$tcktRes = new MovieTicketReservation($this->ReservationID, 3, $this->student);
+			$tcktRes->save();
+		}
+		
+		if($this->concession > 0) {
+			$tcktRes = new MovieTicketReservation($this->ReservationID, 4, $this->concession);
+			$tcktRes->save();
+		}
+	
+	
 	}
 
 	/* 	This function allows the object to be saved back to the database, whether it is a new object or 
 		an object being updated.
 	*/
 	public function save() {	
-		if($this->Name == null) {
+		if($this->MemberID == null || $this->MovieScreeningID == null) {
 			throw new Exception('One or more required fields are not completed.');
 		}
+		updateTicketReservation();
 
 		if ($this->isLoaded === true) {
 			$SQL = "UPDATE movie_reservation SET 
-					MemberID = ".mysql_real_escape_string($this->MemberID)." , MovieScreeningID = ".mysql_real_escape_string($this->MovieScreeningID).", PurchaseDate = '".mysql_real_escape_string($this->PurchaseDate)."' 
+					MemberID = ".mysql_real_escape_string($this->MemberID)." , MovieScreeningID = ".mysql_real_escape_string($this->MovieScreeningID).", ReservationDate = '".mysql_real_escape_string($this->ReservationDate)."' 
 					WHERE ReservationID = '".mysql_real_escape_string($this->ReservationID)."'";
 
 			$this->conn->execute($SQL);
 		} else {
-			$SQL = "INSERT INTO movie_reservation (MemberID, MovieScreeningID, PurchaseDate) 
-VALUES (".mysql_real_escape_string($this->MemberID).", ".mysql_real_escape_string($this->MovieScreeningID).", '".mysql_real_escape_string($this->PurchaseDate)."')";
+			$SQL = "INSERT INTO movie_reservation (MemberID, MovieScreeningID) 
+VALUES (".mysql_real_escape_string($this->MemberID).", ".mysql_real_escape_string($this->MovieScreeningID).")";
 			$this->isLoaded = true;
 			$this->ReservationID = $this->conn->execute($SQL);
 		}		
@@ -65,7 +96,7 @@ VALUES (".mysql_real_escape_string($this->MemberID).", ".mysql_real_escape_strin
 		$str .= "<br />ReservationID: " . $this->ReservationID;
 		$str .= "<br />MemberID: " . $this->MemberID;
 		$str .= "<br />MovieScreeningID: " . $this->MovieScreeningID;
-		$str .= "<br />PurchaseDate: " . $this->PurchaseDate;
+		$str .= "<br />ReservationDate: " . $this->ReservationDate;
 
 		return $str;
 	}

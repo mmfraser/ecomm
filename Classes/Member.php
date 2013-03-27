@@ -2,7 +2,7 @@
 require_once('App.php');
 
 class Member {
-	private $memberId;
+	public $memberId;
   	public $forename;
   	public $surname;
   	public $password;

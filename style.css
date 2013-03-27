@@ -33,6 +33,15 @@ h1 {
 		padding:2px 0 0 10px;
 }
 
+.movieMain h4 {
+	margin:15px 0 0 0;
+	font-size:20px;
+}
+
+h5 {
+	margin:10px 0 0 0;
+}
+
 p {
 	font-size: 1em;
 }
@@ -142,4 +151,53 @@ div#accordion, .ui-accordion-content {
 	font-size: 12px;
 	width:500px;
 	padding:10px!important;
+}
+
+div.movieMain {
+	width:660px;
+	min-height:200px;
+	padding:10px;
+	float:left;
+	-moz-border-radius: 15px;
+	border-radius: 15px;
+	background-color:#94ebfe;
+	margin:10px 10px 0 0;
+}
+
+div.moviesLeft {
+	width:200px;
+	min-height:200px;
+	padding:10px;
+	float:left;
+	-moz-border-radius: 15px;
+	border-radius: 15px;
+	background-color:#94ebfe;
+	margin:10px 10px 0 0;
+}
+
+div.moviesLeft li {
+	list-style:none;
+	margin-left:10px;
+	margin:10px 0 0 10px;
+}
+
+span.movieDate {
+	color:grey;
+	width:15px;
+	font-size:10px;
+}
+
+a.movieLink {
+	float:left;
+	width:140px;
+}
+
+ul.screeningTime {
+	list-style:none;
+	margin-left:10px;
+}
+
+table {
+	margin:0;
+	padding:0;
 }

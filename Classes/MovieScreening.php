@@ -48,7 +48,7 @@ class MovieScreening {
 		
 		try {
 			if(strpos($this->Date, '/') !== false) {
-				$dateArr = date_parse_from_format("d/m/Y", $this->Date);
+				$dateArr = date_parse_from_format("m/d/Y", $this->Date);
 				$dateFormat = $dateArr["year"] . "-" . $dateArr["month"] . "-" . $dateArr["day"];
 			} else if(strpos($this->Date, '-') !== false) {
 				$dateFormat = $this->Date;
@@ -58,9 +58,29 @@ class MovieScreening {
 			throw $e;
 		}
 			$this->Date = $dateFormat;
-		
+	
+			if((int)$this->Time > 2400 || (int)$this->Time < 0) {
+				throw new Exception("Invalid time format. Expected HHMM");
+			}
+			
+			$movie = new Movie();
+			$movie->populateId($this->MovieID);
+			
+		// Check to see if screen isn't being used at the time.
+			$conflicting = App::getDB()->getArrayFromDB("SELECT * FROM Movie_Screening ms LEFT JOIN Movies m on m.MovieID = ms.MovieID WHERE ms.ScreenID = '".mysql_real_escape_string($this->ScreenID)."' AND ms.Date = '".mysql_real_escape_string($this->Date)."'");
+			
+			$movieStartTime = strtotime($this->Time);
+			$movieEndTime = $movieStartTime + ((int) $movie->duration*60);
 
-		if ($this->isLoaded === true) {		
+			foreach($conflicting as $row) {
+				$startTime = strtotime($row['Time']);
+				$endTime = $startTime + ((int)$row['duration']*60);
+				if($movieStartTime<=$endTime && $startTime<=$movieEndTime) { 
+					throw new Exception("Error: film (".$movie->Name.") showing in screen, causing movie overlap.  Please choose a different time or screen.");
+				}
+			}
+
+			if ($this->isLoaded === true) {		
 			$SQL = "UPDATE movie_screening SET 
 					MovieID = ".mysql_real_escape_string($this->MovieID).",
 					ScreenID = ".mysql_real_escape_string($this->ScreenID).",
@@ -74,6 +94,7 @@ class MovieScreening {
 			VALUES (".mysql_real_escape_string($this->MovieID).", ".mysql_real_escape_string($this->ScreenID).", '".mysql_real_escape_string($this->Date)."', '".mysql_real_escape_string($this->Time)."')";
 			$this->isLoaded = true;
 			$this->ScreeningID = $this->conn->execute($SQL);
+			print $SQL;
 		}		
 	}
 

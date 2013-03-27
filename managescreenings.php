@@ -18,8 +18,6 @@
 	  $Date = $_POST['Date'];
 	  $Time = $_POST['Time'];
 	  
-	  
-
 	  try {
 		$newScreening = new MovieScreening($MovieID, $ScreenID, $Date, $Time);
 		$newScreening->save();
@@ -106,13 +104,15 @@
 			
 			<tr>
 						<td><label for="Date">Date:</label></td>
-						<td><input id="Date" name="Date"  type="text" value="<?=$_POST['Date'] ?>"  title="Enter the date in the format DD/MM/YYYY" /></td>
+						<td><input id="Date" name="Date"  type="text" value="<?=$_POST['Date'] ?>"  title="Enter the date in the format MM/DD/YYYY" /></td>
 					</tr>
 					
 					<tr>
 						<td><label for="Time">Time:</label></td>
 						<td><input id="Time" name="Time"  type="text" value="<?=$_POST['Time'] ?>"  title="Enter the time in 24 hour clock" /></td>
 					</tr>
+					
+					
 			
 			<tr><td></td><td><input type="submit" id="submitBtn" value="Create" /></td></tr>
 		</table>
